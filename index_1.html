@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>recitl · Launch Timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --plum:#2D1B3D;
+  --rose:#C45E8A;
+  --rose-light:#E8B4CB;
+  --rose-soft:#F5E6EF;
+  --cream:#FAF8F3;
+  --border:rgba(45,27,61,0.1);
+  --slate:#5C4A6E;
+  --slate-light:#8C7A9E;
+  --green:#4A8C6F;
+  --green-soft:#EEF4F0;
+  --gold:#B8860B;
+  --gold-soft:#FEF9E7;
+  --red:#9B2335;
+  --red-soft:#FDECEE;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--plum);min-height:100vh;}
+
+/* HEADER */
+.header{
+  background:var(--plum);
+  padding:22px 28px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 4px 24px rgba(0,0,0,0.25);
+}
+.logo{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:#FAF8F3;display:flex;align-items:flex-end;gap:3px;}
+.logo-dot{width:6px;height:6px;border-radius:50%;background:var(--rose);margin-bottom:4px;}
+.header-right{text-align:right;}
+.header-label{font-size:11px;color:rgba(250,248,243,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;}
+.master-prog{display:flex;align-items:center;gap:8px;}
+.master-bar{width:140px;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;}
+.master-fill{height:100%;background:var(--rose);border-radius:3px;transition:width 0.4s ease;}
+.master-pct{font-size:13px;font-weight:500;color:var(--rose-light);}
+
+/* PHASE TABS */
+.tabs-wrap{background:var(--plum);border-top:1px solid rgba(255,255,255,0.06);padding:0 28px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.tabs-wrap::-webkit-scrollbar{display:none;}
+.tab{
+  padding:11px 16px;font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;
+  color:rgba(250,248,243,0.35);cursor:pointer;border-bottom:2px solid transparent;
+  white-space:nowrap;transition:color 0.2s,border-color 0.2s;background:none;border-top:none;border-left:none;border-right:none;
+}
+.tab:hover{color:rgba(250,248,243,0.7);}
+.tab.on{color:var(--rose-light);border-bottom-color:var(--rose);}
+
+/* MAIN */
+.main{max-width:720px;margin:0 auto;padding:24px 20px 60px;}
+
+/* PHASE HEADER */
+.phase-hdr{margin-bottom:20px;}
+.phase-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;margin-bottom:4px;}
+.phase-sub{font-size:13px;color:var(--slate-light);margin-bottom:14px;}
+.phase-prog-row{display:flex;align-items:center;gap:10px;}
+.phase-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.phase-fill{height:100%;background:var(--rose);border-radius:2px;transition:width 0.4s;}
+.phase-count{font-size:12px;color:var(--slate-light);}
+
+/* SECTION */
+.section{margin-bottom:20px;}
+.section-title{
+  font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--slate-light);margin-bottom:8px;padding-bottom:6px;
+  border-bottom:1px solid var(--border);
+}
+
+/* TASK */
+.task{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 12px;background:#fff;border-radius:8px;
+  border:0.5px solid var(--border);margin-bottom:5px;
+  cursor:pointer;transition:opacity 0.15s,background 0.15s;
+  user-select:none;
+}
+.task:hover{background:#FDFCFA;}
+.task.done{opacity:0.45;}
+.cb{
+  width:16px;height:16px;border-radius:4px;border:1.5px solid var(--rose-light);
+  flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s,border-color 0.15s;
+}
+.task.done .cb{background:var(--rose);border-color:var(--rose);}
+.task.done .cb::after{content:'';display:block;width:4px;height:7px;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(45deg) translate(-1px,-1px);}
+.task-body{flex:1;min-width:0;}
+.task-text{font-size:13px;line-height:1.4;color:var(--plum);}
+.task.done .task-text{text-decoration:line-through;color:var(--slate-light);}
+.task-note{font-size:11px;color:var(--slate-light);margin-top:2px;line-height:1.4;}
+.tags{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;}
+.tag{
+  font-size:9px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;
+  padding:2px 7px;border-radius:20px;
+}
+.tag-crit{background:var(--red-soft);color:var(--red);}
+.tag-now{background:var(--rose-soft);color:var(--rose);}
+.tag-tyson{background:#E8F4FD;color:#1A6B9A;}
+.tag-hold{background:var(--gold-soft);color:var(--gold);}
+.tag-legal{background:#F0EEF5;color:var(--slate);}
+
+/* PHASE PANEL */
+.panel{display:none;}
+.panel.on{display:block;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">recitl<div class="logo-dot"></div></div>
+  <div class="header-right">
+    <div class="header-label">Launch Timeline</div>
+    <div class="master-prog">
+      <div class="master-bar"><div class="master-fill" id="master-fill" style="width:0%"></div></div>
+      <div class="master-pct" id="master-pct">0%</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-wrap" id="tabs"></div>
+
+<div class="main" id="main"></div>
+
+<script>
+const PHASES = [
+  {
+    id:'foundation',
+    name:'Foundation',
+    sub:'Legal, IP, and structural setup — do this before anything else',
+    sections:[
+      {title:'Legal entity',tasks:[
+        {id:'llc1',text:'Form LLC — Delaware (preferred for future investment) or California',note:'Delaware: ~$140 + registered agent fee. California: $70 filing + $800/yr min franchise tax.',tags:['crit','now']},
+        {id:'llc2',text:'Open Mercury business bank account',note:'Free, startup-friendly, no minimums. Apply at mercury.com.',tags:['now']},
+        {id:'llc3',text:'Get EIN from IRS (free, instant online)',tags:['now']},
+        {id:'llc4',text:'Review Vox employment agreement IP clause',note:'Confirm Recitl work (done on personal time, personal equipment) is yours. Bring IP attorney if ambiguous.',tags:['crit','legal']},
+      ]},
+      {title:'Trademark',tasks:[
+        {id:'tm1',text:'Self-search "Recitl" on tmsearch.uspto.gov — Classes 9 and 42',note:'Class 9: software/apps. Class 42: SaaS/platform services.',tags:['now']},
+        {id:'tm2',text:'Hire IP attorney for clearance opinion',note:'MetLife Legal explicitly excludes trademark work. Budget ~$500–800 for opinion letter.',tags:['crit','legal']},
+        {id:'tm3',text:'File trademark application, Classes 9 and 42',note:'File after clearance opinion. ~$250/class USPTO fee. Attorney files on your behalf.',tags:['legal']},
+      ]},
+      {title:'Developer IP',tasks:[
+        {id:'ip1',text:'Sign IP assignment agreement with Tyson before any code is written',note:'All work-for-hire transfers to the LLC. Non-negotiable — this is your most critical legal protection.',tags:['crit','legal']},
+        {id:'ip2',text:'Confirm Tyson compensation structure (deferred equity vs. hourly vs. founder terms)',tags:['legal']},
+      ]},
+      {title:'Brand & handles',tasks:[
+        {id:'br1',text:'Confirm getrecitl.com domain is live/secured',tags:['now']},
+        {id:'br2',text:'Lock @recitl handle on TikTok, Pinterest, Instagram, Threads, X',note:'Instagram: @getrecitl active. Monitor @recitl for availability.',tags:['now']},
+        {id:'br3',text:'Set up getrecitl@gmail.com or hello@getrecitl.com for business comms',tags:['now']},
+      ]},
+    ]
+  },
+  {
+    id:'phase0',
+    name:'Phase 0 — Audience',
+    sub:'Build before you build. 500 waitlist emails before TestFlight goes live.',
+    sections:[
+      {title:'Content engine',tasks:[
+        {id:'c1',text:'Publish first TikTok — "Things competitive dance parents carry that no one talks about"',note:'Use CapCut. Aim for 30–60 sec. Personal, specific, real.',tags:['now']},
+        {id:'c2',text:'Establish 3x/week TikTok cadence',note:'Formats: POV (parent at comp), problem/solution, "wait until you see this", score reveals, pack list reveals.',tags:['now']},
+        {id:'c3',text:'Set up Pinterest — competition prep boards, pack lists, score tracking inspo',note:'Evergreen SEO engine. Pins compound over time.',tags:['now']},
+        {id:'c4',text:'Launch Beehiiv newsletter — "The Recitl Report" or similar',note:'Weekly: one tip, one thing to know, one thing to track. Build habit before app exists.',tags:['now']},
+        {id:'c5',text:'Write 4 SEO editorial pieces for getrecitl.com',note:'Titles: "What to pack for a dance competition", "How to read dance competition scores", "First season competition guide", "How much does competitive dance really cost"',tags:[]},
+      ]},
+      {title:'Waitlist',tasks:[
+        {id:'w1',text:'Build waitlist landing page at getrecitl.com',note:'Hero: "The app that gets it." Email gate. No app store link yet.',tags:['crit','now']},
+        {id:'w2',text:'Gate all content with waitlist CTA — every TikTok, every pin, every email',tags:['now']},
+        {id:'w3',text:'Personal outreach to 30 TAC families — text, not DM',note:'Warm leads only. Grayson\'s season connects you to this cohort directly.',tags:['crit','now']},
+        {id:'w4',text:'Hit 500 verified emails before TestFlight launch',note:'This is the go/no-go signal for Phase 2. Do not skip.',tags:['crit']},
+      ]},
+      {title:'Community',tasks:[
+        {id:'cm1',text:'Join 5 active competitive dance Facebook groups — observe, don\'t pitch yet',note:'Listen for pain points. Quote them back later in content. Do not sell.',tags:[]},
+        {id:'cm2',text:'Identify and follow 10 comp dance parent TikTok creators',note:'Understand format, tone, vocabulary.',tags:[]},
+        {id:'cm3',text:'Place QR codes (waitlist link) at 2+ comp venues during Grayson\'s season',note:'Physical discovery at the venue is highest-intent. Do this personally.',tags:[]},
+      ]},
+    ]
+  },
+  {
+    id:'phase1',
+    name:'Phase 1 — Build',
+    sub:'Full custom app with Tyson on Supabase. 8 screens. No shortcuts.',
+    sections:[
+      {title:'Pre-build gates',tasks:[
+        {id:'b0',text:'IP assignment signed with Tyson ✓ (see Foundation)',tags:['crit']},
+        {id:'b01',text:'Write full product spec — every screen, every interaction, every edge case',note:'Use your memory summaries + demo HTML as the source of truth. Give Tyson a spec, not a vibe.',tags:['crit']},
+        {id:'b02',text:'Agree on build milestones and review cadence with Tyson',tags:[]},
+      ]},
+      {title:'Architecture & infrastructure',tasks:[
+        {id:'b1',text:'Supabase project setup — schema design with RLS security',note:'RLS (row-level security) is non-negotiable before any family data goes live. Families cannot see each other\'s data.',tags:['tyson','crit']},
+        {id:'b2',text:'Auth flow — email + Apple sign-in',tags:['tyson']},
+        {id:'b3',text:'COPPA compliance review before onboarding any minors\' data',note:'Competitive dancers are children. This requires explicit legal review. Budget for a brief attorney consult.',tags:['crit','legal']},
+      ]},
+      {title:'Sprint 1 — Core value',tasks:[
+        {id:'s1a',text:'Competition calendar (Schedule tab)',note:'Core reason to open the app. Must be excellent.',tags:['tyson','crit']},
+        {id:'s1b',text:'Score logger (Scores tab)',note:'The feature that will spread via word of mouth at venues.',tags:['tyson','crit']},
+      ]},
+      {title:'Sprint 2 — Retention hooks',tasks:[
+        {id:'s2a',text:'Costume tracker + Smart Pack List (Costumes tab)',note:'Smart Pack List lives below routine thumbnails. Surfaces 48hrs before comp.',tags:['tyson']},
+        {id:'s2b',text:'Dancer profile + Season stats (Profile tab)',tags:['tyson']},
+      ]},
+      {title:'Sprint 3 — Network & travel',tasks:[
+        {id:'s3a',text:'Studio Hub with Roster Management',note:'Studio director view. Foundation for studio partnership revenue.',tags:['tyson']},
+        {id:'s3b',text:'Travel tab — hotel affiliate integration',note:'3–8% affiliate commission. Surfaces contextually in competition detail view.',tags:['tyson']},
+      ]},
+      {title:'Sprint 4 — Intelligence layer',tasks:[
+        {id:'s4a',text:'Score Intelligence — trend, percentile, judge pattern',tags:['tyson']},
+        {id:'s4b',text:'Judge Decoder — plain-language critique translation',tags:['tyson']},
+        {id:'s4c',text:'Season Pattern Recognition — what\'s working, what\'s not',tags:['tyson']},
+      ]},
+      {title:'Sprint 5 — Renewal engine',tasks:[
+        {id:'s5a',text:'Season Wrapped — engineered to drop in June',note:'This is your primary retention mechanic. Must be emotionally resonant and shareable.',tags:['tyson','crit']},
+        {id:'s5b',text:'Renewal Intelligence — proactive re-subscription prompts',tags:['tyson']},
+      ]},
+      {title:'Sprint 6 — Polish & security',tasks:[
+        {id:'s6a',text:'Full security audit before any family data goes live',tags:['crit','tyson']},
+        {id:'s6b',text:'COPPA/COPPA+ review — data minimization, parental consent flows',tags:['crit','legal']},
+        {id:'s6c',text:'TestFlight build ready — internal testing with you and Tyson first',tags:['tyson']},
+      ]},
+    ]
+  },
+  {
+    id:'phase2',
+    name:'Phase 2 — Beta',
+    sub:'30 TAC families. Personal. Measured. Iterated.',
+    sections:[
+      {title:'Distribution',tasks:[
+        {id:'bt1',text:'Personal text to 30 TAC families — not a blast, individual messages',note:'You know these families. Use that. "I built something for us — would you try it?" converts.',tags:['crit']},
+        {id:'bt2',text:'TestFlight invites distributed — track install rate',tags:[]},
+        {id:'bt3',text:'Set up weekly WAU tracking from day one',note:'Target: 50% WAU for 4 consecutive weeks is your retention signal. Measure from the start.',tags:['crit']},
+      ]},
+      {title:'TAC studio pitch',tasks:[
+        {id:'st1',text:'Build TAC director pitch deck — studio partnership framing',note:'Free tier always available. Founding rate: $49/mo. Standard: $99/mo. Lead with roster management + family communication.',tags:['crit']},
+        {id:'st2',text:'Schedule meeting with TAC director',note:'Warm intro via Grayson\'s season. Founder-market fit is your credibility.',tags:['crit']},
+        {id:'st3',text:'Pilot TAC as first studio partner — 90-day free trial, then founding rate',tags:[]},
+      ]},
+      {title:'Iteration',tasks:[
+        {id:'it1',text:'Collect structured feedback from beta families — 3 questions max',note:'"What did you use most?" "What\'s missing?" "Would you pay $79/yr?" That\'s all you need.',tags:[]},
+        {id:'it2',text:'Identify top 3 feedback items and ship fixes before App Store submission',tags:['tyson']},
+        {id:'it3',text:'Confirm 500-email waitlist hit before App Store launch',tags:['crit']},
+      ]},
+    ]
+  },
+  {
+    id:'phase3',
+    name:'Phase 3 — Launch',
+    sub:'App Store live. Season Wrapped in June. Studios start paying.',
+    sections:[
+      {title:'App Store submission',tasks:[
+        {id:'as1',text:'Enroll in Apple Developer Program ($99/yr)',tags:[]},
+        {id:'as2',text:'App Store listing — screenshots, description, keywords',note:'Keywords: dance competition app, comp dance tracker, dance mom app, competition score tracker.',tags:[]},
+        {id:'as3',text:'Submit for App Store review',note:'Apple review: 24–72 hrs typically. Have a rejection response plan.',tags:['crit']},
+        {id:'as4',text:'Android / Google Play — Phase 3b. iOS first.',tags:[]},
+      ]},
+      {title:'Season Wrapped launch',tasks:[
+        {id:'sw1',text:'Engineer Season Wrapped to drop June 2025 — end of comp season',note:'This is your Spotify Wrapped moment. Shareable. Emotional. Drives renewals.',tags:['crit','tyson']},
+        {id:'sw2',text:'Season Wrapped social push — TikTok, Instagram Stories, IG feed',note:'Every family who shares their Wrapped is an acquisition channel.',tags:['crit']},
+        {id:'sw3',text:'Renewal prompts tied to Wrapped — "Your season was incredible. Lock in Year 2."',tags:[]},
+      ]},
+      {title:'Editorial — activate now',tasks:[
+        {id:'ed1',text:'TikTok — behind the scenes of building Recitl',note:'Founder-forward content unlocked once brand has momentum.',tags:[]},
+        {id:'ed2',text:'Product Hunt launch',note:'Time it with App Store launch. Prep assets 2 weeks prior.',tags:[]},
+        {id:'ed3',text:'Dance Facebook groups — now you can pitch',note:'You\'ve been observing. Now share as a fellow comp dance parent, not a marketer.',tags:[]},
+        {id:'ed4',text:'Comp venue QR codes — app download link replaces waitlist',tags:[]},
+      ]},
+      {title:'Editorial — hold until post-Vox',tasks:[
+        {id:'pv1',text:'The Cut — pitch: working mother + comp dance founder story',tags:['hold']},
+        {id:'pv2',text:'Romper / Scary Mommy / Today Parents — parenting press, your exact demo',tags:['hold']},
+        {id:'pv3',text:'Dance Teacher Magazine / Dance Spirit — studio director audience',tags:['hold']},
+        {id:'pv4',text:'LA Times / LAist — founder story + LA dance culture angle',tags:['hold']},
+        {id:'pv5',text:'GMA / Today — Season Wrapped is a TV segment waiting to happen',tags:['hold']},
+      ]},
+      {title:'Studio growth engine',tasks:[
+        {id:'sg1',text:'TAC as reference customer — get a quote for press/deck',note:'"The studio that ran on Recitl first."',tags:['crit']},
+        {id:'sg2',text:'Identify 10 target studios in LA + 5 in other markets',note:'Look at Grayson\'s competition schedule — those venues point to which studios compete.',tags:[]},
+        {id:'sg3',text:'Cold outreach to studio directors — comp-specific cold email, not generic pitch',tags:[]},
+        {id:'sg4',text:'Hit 3 active paying studios (founding rate)',note:'This is one of your quit-trigger gates.',tags:['crit']},
+      ]},
+    ]
+  },
+  {
+    id:'quit',
+    name:'Quit Triggers',
+    sub:'The discipline that keeps this rational.',
+    sections:[
+      {title:'Go signals — all three required',tasks:[
+        {id:'q1',text:'$500K confirmed ARR',note:'Not pipeline. Not LOIs. Confirmed recurring revenue.',tags:['crit']},
+        {id:'q2',text:'3 active studio partners paying monthly',note:'At founding rate ($49/mo) or standard ($99/mo).',tags:['crit']},
+        {id:'q3',text:'50% WAU for 4 consecutive weeks',note:'This is your retention signal. It says the product has lock-in.',tags:['crit']},
+      ]},
+      {title:'Stop-loss',tasks:[
+        {id:'sl1',text:'Month 10: If not 3 studios + 50% WAU + $500 real revenue — walk away',note:'Not "almost there." Not "it\'s close." The gates are the gates.',tags:['crit']},
+        {id:'sl2',text:'Phase 3 React Native build is the capital inflection point — self-fund through here',note:'Do not trade equity before validating retention. That\'s the discipline.',tags:[]},
+      ]},
+      {title:'Exit horizon',tasks:[
+        {id:'ex1',text:'Y1 target: ~$123K ARR',note:'500 family Pro subs ($79/yr) + 3 studios (founding rate) + early affiliate.',tags:[]},
+        {id:'ex2',text:'Y5 target: ~$4.9M ARR → Exit ~$29M+ at 6× revenue',tags:[]},
+        {id:'ex3',text:'Post-Vox editorial activation — The Cut, Romper, GMA, etc.',note:'Editorial relationships at Vox cannot be activated until after you depart.',tags:['hold']},
+      ]},
+    ]
+  }
+];
+
+// State
+let checked = {};
+try { checked = JSON.parse(localStorage.getItem('recitl_tl') || '{}'); } catch(e){}
+let activePhase = 0;
+
+function save() {
+  try { localStorage.setItem('recitl_tl', JSON.stringify(checked)); } catch(e){}
+}
+
+function allTasks() {
+  let arr = [];
+  PHASES.forEach(p => p.sections.forEach(s => s.tasks.forEach(t => arr.push(t))));
+  return arr;
+}
+
+function phaseTasks(p) {
+  let arr = [];
+  p.sections.forEach(s => s.tasks.forEach(t => arr.push(t)));
+  return arr;
+}
+
+function countDone(tasks) { return tasks.filter(t => checked[t.id]).length; }
+
+function tagHtml(tags) {
+  if (!tags || !tags.length) return '';
+  const map = {crit:'Critical',now:'Do Now',tyson:'Tyson',hold:'Hold — Post-Vox',legal:'Legal'};
+  const cls = {crit:'tag-crit',now:'tag-now',tyson:'tag-tyson',hold:'tag-hold',legal:'tag-legal'};
+  return '<div class="tags">' + tags.map(t => `<span class="tag ${cls[t]||''}">${map[t]||t}</span>`).join('') + '</div>';
+}
+
+function renderTabs() {
+  const el = document.getElementById('tabs');
+  el.innerHTML = PHASES.map((p,i) => {
+    const tasks = phaseTasks(p);
+    const done = countDone(tasks);
+    return `<button class="tab${i===activePhase?' on':''}" onclick="setPhase(${i})">${p.name}</button>`;
+  }).join('');
+}
+
+function renderMaster() {
+  const all = allTasks();
+  const done = countDone(all);
+  const pct = Math.round((done/all.length)*100);
+  document.getElementById('master-fill').style.width = pct+'%';
+  document.getElementById('master-pct').textContent = pct+'%';
+}
+
+function renderMain() {
+  const p = PHASES[activePhase];
+  const tasks = phaseTasks(p);
+  const done = countDone(tasks);
+  const pct = tasks.length ? Math.round((done/tasks.length)*100) : 0;
+
+  let html = `<div class="phase-hdr">
+    <div class="phase-name">${p.name}</div>
+    <div class="phase-sub">${p.sub}</div>
+    <div class="phase-prog-row">
+      <div class="phase-bar"><div class="phase-fill" style="width:${pct}%"></div></div>
+      <div class="phase-count">${done} / ${tasks.length}</div>
+    </div>
+  </div>`;
+
+  p.sections.forEach(s => {
+    html += `<div class="section"><div class="section-title">${s.title}</div>`;
+    s.tasks.forEach(t => {
+      const on = !!checked[t.id];
+      html += `<div class="task${on?' done':''}" onclick="toggle('${t.id}')">
+        <div class="cb"></div>
+        <div class="task-body">
+          <div class="task-text">${t.text}</div>
+          ${t.note ? `<div class="task-note">${t.note}</div>` : ''}
+          ${tagHtml(t.tags)}
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  document.getElementById('main').innerHTML = html;
+  document.getElementById('main').scrollTop = 0;
+  window.scrollTo(0,0);
+}
+
+function render() {
+  renderTabs();
+  renderMaster();
+  renderMain();
+}
+
+function toggle(id) {
+  checked[id] = !checked[id];
+  save();
+  render();
+}
+
+function setPhase(i) {
+  activePhase = i;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
