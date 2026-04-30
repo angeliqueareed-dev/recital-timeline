@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>recitl · Launch Timeline · v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --plum:#3D2650;
+    --plum-deep:#2D1B3D;
+    --plum-mid:#4D2F60;
+    --rose:#C45E8A;
+    --rose-mid:#D4789E;
+    --rose-light:#E8B4CB;
+    --rose-soft:#F5E6EF;
+    --cream:#FAF8F3;
+    --cream-dark:#F0EBE3;
+    --slate:#5C4A6E;
+    --slate-light:#8C7A9E;
+    --border:rgba(45,27,61,0.08);
+    --border-strong:rgba(45,27,61,0.14);
+    --serif:'Cormorant Garamond', Georgia, serif;
+    --sans:'DM Sans', -apple-system, sans-serif;
+
+    --tag-now:#9B2335;
+    --tag-now-soft:#FDECEE;
+    --tag-critical:#B8860B;
+    --tag-critical-soft:#FEF9E7;
+    --tag-tyson:#4A8C6F;
+    --tag-tyson-soft:#EEF4F0;
+    --tag-hold:#6B4A8C;
+    --tag-hold-soft:#F0EBF5;
+    --tag-ang:#3D2650;
+    --tag-ang-soft:#F0EBE3;
+  }
+
+  html,body{
+    background:var(--cream-dark);
+    color:var(--plum);
+    font-family:var(--sans);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* HEADER */
+  .header{
+    background:var(--plum);
+    color:var(--cream);
+    padding:24px 28px 22px;
+    position:sticky;top:0;z-index:100;
+    box-shadow:0 4px 30px rgba(45,27,61,0.3);
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+  }
+  .header::before{
+    content:"";position:absolute;
+    top:14px;left:14px;right:14px;bottom:14px;
+    border:0.5px solid rgba(232,180,203,0.18);
+    pointer-events:none;
+  }
+  .logo-block{display:flex;flex-direction:column;gap:2px;position:relative;z-index:1;}
+  .logo{
+    font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:32px;color:var(--cream);line-height:1;letter-spacing:-0.01em;
+  }
+  .logo .dot{color:var(--rose-light);}
+  .logo-tag{
+    font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--rose-light);margin-top:6px;
+  }
+  .header-meta{
+    display:flex;flex-direction:column;gap:4px;align-items:flex-end;
+    font-size:11px;letter-spacing:0.1em;color:var(--rose-light);
+    position:relative;z-index:1;
+  }
+  .progress-pill{
+    background:rgba(232,180,203,0.12);
+    padding:8px 16px;border-radius:20px;
+    display:flex;align-items:center;gap:10px;
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;
+    color:var(--cream);
+  }
+  .progress-bar{
+    width:120px;height:3px;background:rgba(232,180,203,0.2);border-radius:2px;overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;background:var(--rose-light);transition:width 0.4s ease;
+  }
+
+  /* MAIN LAYOUT */
+  .layout{
+    max-width:1180px;margin:0 auto;
+    padding:48px 32px 100px;
+  }
+
+  /* INTRO */
+  .intro{
+    background:var(--cream);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:36px 40px;
+    margin-bottom:36px;
+    position:relative;
+  }
+  .intro-eyebrow{
+    font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--rose);margin-bottom:10px;
+  }
+  .intro-title{
+    font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:36px;color:var(--plum);line-height:1.15;margin-bottom:14px;letter-spacing:-0.01em;
+  }
+  .intro-body{
+    font-size:14px;color:var(--slate);line-height:1.65;max-width:680px;
+  }
+  .intro-body strong{color:var(--plum);font-weight:600;}
+
+  /* PHASE NAV */
+  .phase-nav{
+    display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap;
+    background:var(--cream);
+    padding:12px;
+    border-radius:8px;
+    border:1px solid var(--border);
+  }
+  .phase-tab{
+    padding:10px 18px;
+    background:transparent;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-family:var(--sans);
+    font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--slate-light);
+    transition:all 0.18s ease;
+    display:flex;flex-direction:column;align-items:flex-start;gap:2px;
+    text-align:left;
+  }
+  .phase-tab:hover{color:var(--plum);background:var(--cream-dark);}
+  .phase-tab.active{
+    background:var(--plum);color:var(--cream);
+  }
+  .phase-tab.active .phase-tab-meta{color:var(--rose-light);}
+  .phase-tab-meta{
+    font-size:9px;font-weight:500;letter-spacing:0.16em;color:var(--slate-light);
+    transition:color 0.18s ease;
+  }
+
+  /* PHASE HEADER */
+  .phase-header{
+    background:linear-gradient(135deg, var(--plum) 0%, var(--plum-mid) 100%);
+    color:var(--cream);
+    padding:40px 44px 36px;
+    border-radius:8px 8px 0 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .phase-header::before{
+    content:"";position:absolute;
+    top:18px;left:18px;right:18px;bottom:18px;
+    border:0.5px solid rgba(232,180,203,0.18);
+    pointer-events:none;
+  }
+  .phase-header::after{
+    content:"";position:absolute;
+    top:-100px;right:-100px;width:300px;height:300px;
+    background:radial-gradient(circle, rgba(196,94,138,0.25), transparent 60%);
+    pointer-events:none;
+  }
+  .phase-header-content{position:relative;z-index:1;}
+  .phase-eyebrow{
+    font-size:10px;font-weight:600;letter-spacing:0.24em;text-transform:uppercase;
+    color:var(--rose-light);margin-bottom:10px;
+  }
+  .phase-title{
+    font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:42px;color:var(--cream);line-height:1.1;margin-bottom:8px;letter-spacing:-0.01em;
+  }
+  .phase-sub{
+    font-size:14px;color:rgba(250,248,243,0.85);line-height:1.55;max-width:680px;margin-bottom:20px;
+  }
+  .phase-prog{
+    display:flex;align-items:center;gap:14px;
+  }
+  .phase-prog-bar{
+    width:200px;height:4px;background:rgba(232,180,203,0.2);border-radius:2px;overflow:hidden;
+  }
+  .phase-prog-fill{
+    height:100%;background:var(--rose-light);transition:width 0.4s ease;
+  }
+  .phase-prog-text{
+    font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--rose-light);
+  }
+
+  /* SECTIONS */
+  .phase-body{
+    background:var(--cream);
+    padding:36px 44px 44px;
+    border:1px solid var(--border);
+    border-top:none;
+    border-radius:0 0 8px 8px;
+  }
+  .section{margin-bottom:36px;}
+  .section:last-child{margin-bottom:0;}
+  .section-eyebrow{
+    font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;
+    color:var(--rose);margin-bottom:8px;
+  }
+  .section-title{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:24px;color:var(--plum);line-height:1.2;margin-bottom:6px;letter-spacing:-0.01em;
+  }
+  .section-desc{
+    font-size:13px;color:var(--slate);line-height:1.55;margin-bottom:18px;
+  }
+
+  /* TASKS */
+  .task{
+    display:flex;gap:14px;align-items:flex-start;
+    padding:14px 16px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    margin-bottom:8px;
+    background:#fff;
+    cursor:pointer;
+    transition:all 0.15s ease;
+    user-select:none;
+  }
+  .task:hover{border-color:var(--rose-mid);background:var(--rose-soft);}
+  .task.done{
+    background:var(--cream-dark);
+    border-color:var(--border);
+  }
+  .task.done .task-text{
+    color:var(--slate-light);text-decoration:line-through;
+  }
+  .task.done .checkbox{
+    background:var(--rose);border-color:var(--rose);
+  }
+  .task.done .checkbox::after{
+    content:"";position:absolute;
+    left:5px;top:2px;
+    width:5px;height:9px;
+    border:solid white;border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+  .checkbox{
+    width:18px;height:18px;
+    border:1.5px solid var(--rose-mid);
+    border-radius:3px;
+    flex-shrink:0;
+    margin-top:2px;
+    position:relative;
+    transition:all 0.15s ease;
+  }
+  .task-content{flex:1;min-width:0;}
+  .task-text{
+    font-size:14px;color:var(--plum);line-height:1.5;
+  }
+  .task-note{
+    font-size:12px;color:var(--slate);font-style:italic;
+    margin-top:4px;line-height:1.5;
+  }
+  .task-tags{
+    display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;
+  }
+  .tag{
+    font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
+    padding:3px 8px;border-radius:3px;
+  }
+  .tag-now{background:var(--tag-now-soft);color:var(--tag-now);}
+  .tag-critical{background:var(--tag-critical-soft);color:var(--tag-critical);}
+  .tag-tyson{background:var(--tag-tyson-soft);color:var(--tag-tyson);}
+  .tag-hold{background:var(--tag-hold-soft);color:var(--tag-hold);}
+  .tag-ang{background:var(--tag-ang-soft);color:var(--tag-ang);}
+  .tag-shipped{background:var(--tag-tyson-soft);color:var(--tag-tyson);}
+
+  /* QUIT TRIGGERS BOX */
+  .quit-box{
+    background:linear-gradient(135deg, var(--plum-deep) 0%, var(--plum) 100%);
+    color:var(--cream);
+    padding:32px 36px;border-radius:8px;
+    margin-bottom:24px;position:relative;overflow:hidden;
+  }
+  .quit-box::before{
+    content:"";position:absolute;top:14px;left:14px;right:14px;bottom:14px;
+    border:0.5px solid rgba(232,180,203,0.18);pointer-events:none;
+  }
+  .quit-eyebrow{
+    font-size:10px;font-weight:600;letter-spacing:0.24em;text-transform:uppercase;
+    color:var(--rose-light);margin-bottom:10px;position:relative;z-index:1;
+  }
+  .quit-title{
+    font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:28px;color:var(--cream);margin-bottom:16px;position:relative;z-index:1;letter-spacing:-0.005em;
+  }
+  .quit-list{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;position:relative;z-index:1;
+  }
+  .quit-item{
+    padding:16px 18px;
+    background:rgba(232,180,203,0.08);
+    border-radius:6px;
+  }
+  .quit-num{
+    font-family:var(--serif);font-style:italic;font-size:36px;
+    color:var(--rose-light);line-height:1;margin-bottom:6px;
+  }
+  .quit-label{
+    font-size:11px;color:rgba(250,248,243,0.85);line-height:1.45;
+  }
+  @media (max-width: 720px){
+    .quit-list{grid-template-columns:1fr;}
+  }
+
+  /* RESET BUTTON */
+  .reset-btn{
+    margin-top:24px;
+    padding:8px 14px;
+    background:transparent;
+    border:1px solid var(--border-strong);
+    border-radius:4px;
+    color:var(--slate-light);
+    font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
+    cursor:pointer;
+    font-family:var(--sans);
+  }
+  .reset-btn:hover{color:var(--rose);border-color:var(--rose);}
+
+  /* TIMELINE STRIP */
+  .strip{
+    display:flex;gap:0;margin-bottom:32px;
+    background:var(--cream);
+    padding:20px 24px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    overflow-x:auto;
+  }
+  .strip-item{
+    flex:1;min-width:120px;
+    padding:0 12px;
+    border-right:0.5px solid var(--border);
+    text-align:center;
+  }
+  .strip-item:last-child{border-right:none;}
+  .strip-month{
+    font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--rose);margin-bottom:6px;
+  }
+  .strip-event{
+    font-family:var(--serif);font-style:italic;font-size:14px;color:var(--plum);line-height:1.35;
+  }
+
+  /* MOBILE */
+  @media (max-width: 720px){
+    .layout{padding:32px 16px 60px;}
+    .intro{padding:24px;}
+    .intro-title{font-size:28px;}
+    .phase-header{padding:28px 24px;}
+    .phase-title{font-size:32px;}
+    .phase-body{padding:24px;}
+    .header{padding:18px 20px;}
+    .phase-nav{padding:8px;}
+    .phase-tab{padding:8px 12px;font-size:11px;}
+  }
+</style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo-block">
+      <div class="logo">recitl<span class="dot">.</span></div>
+      <div class="logo-tag">launch timeline · v2</div>
+    </div>
+    <div class="progress-pill">
+      <span id="progress-text">0% complete</span>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <section class="intro">
+      <div class="intro-eyebrow">april 30, 2026 · today</div>
+      <h1 class="intro-title">Where we are. Where we're going.</h1>
+      <p class="intro-body">
+        Tyson has the v3 build spec. The brand kit is locked at corrected plum (#3D2650). The five-month social calendar is drafted. Founding-family merch sourcing is mapped. The next 21 days are about <strong>operational unblocks</strong> — LLC formation through Stripe Atlas, EIN, Mercury, social profile activation. Then <strong>five months of voice-building</strong> through the off-season. Then <strong>February 2027 launch</strong>, with founding families pre-loaded and the season opening at peak energy.
+      </p>
+    </section>
+
+    <!-- TIMELINE STRIP -->
+    <div class="strip">
+      <div class="strip-item">
+        <div class="strip-month">May 2026</div>
+        <div class="strip-event">LLC + EIN + social profiles live</div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-month">Jun · Jul</div>
+        <div class="strip-event">Off-season content lane</div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-month">Aug · Sep</div>
+        <div class="strip-event">Founding family launch</div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-month">Oct · Jan</div>
+        <div class="strip-event">Pre-launch ramp · TestFlight</div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-month">Feb 2027</div>
+        <div class="strip-event">App Store launch</div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-month">Jun 2027</div>
+        <div class="strip-event">Season Wrapped renewal</div>
+      </div>
+    </div>
+
+    <!-- PHASE NAV -->
+    <nav class="phase-nav" id="phase-nav"></nav>
+
+    <!-- PHASE CONTENT -->
+    <main id="main"></main>
+
+    <button class="reset-btn" onclick="resetProgress()">Reset all progress</button>
+
+  </div>
+
+<script>
+const PHASES = [
+  {
+    id: 'foundation',
+    name: 'Foundation',
+    meta: 'Now → Mid-May 2026',
+    title: 'Foundation',
+    sub: 'Operational unblocks. LLC formation via Atlas, EIN, virtual mailbox, Mercury, social profile activation. Three weeks of paperwork that unlocks every downstream phase.',
+    sections: [
+      {
+        eyebrow: 'this week',
+        title: 'Form the entity',
+        desc: 'Delaware LLC via Stripe Atlas. iPostal1 mailbox first so the LLC has a clean, permanent address that survives your move.',
+        tasks: [
+          { id: 'addr-1', text: 'Sign up for iPostal1 or Earth Class Mail · LA address', note: '~$15/mo. Use as principal office address on Atlas. Survives your move.', tags: ['NOW'] },
+          { id: 'addr-2', text: 'Verify "Recitl, LLC" available at icis.corp.delaware.gov', note: '5 minutes. Confirms the name before Atlas filing.', tags: ['NOW'] },
+          { id: 'atlas-1', text: 'Submit Stripe Atlas application · LLC formation', note: '~$500. LLC type, "Recitl, LLC", 100% Ang at formation. Atlas registered agent, iPostal1 as principal office.', tags: ['NOW', 'CRITICAL'] },
+          { id: 'atlas-2', text: 'Atlas confirms formation (3–5 days after submission)', note: 'Watch for confirmation email. Do not file CA registration until this clears.', tags: [] },
+          { id: 'ein-1', text: 'EIN issued by IRS via Atlas (1–3 days after formation)', note: 'Save the CP 575 letter immediately to a dedicated folder. Required for everything downstream.', tags: ['CRITICAL'] },
+        ],
+      },
+      {
+        eyebrow: 'within ~10 days',
+        title: 'Banking + state registration',
+        desc: 'Mercury opens with the EIN. CA registration filed in parallel. Once both are done, the entity is fully operational.',
+        tasks: [
+          { id: 'mercury-1', text: 'Open Mercury account using the EIN', note: '~1 day after EIN. Free for early-stage. Includes virtual debit cards.', tags: ['CRITICAL'] },
+          { id: 'mercury-2', text: 'Initial capital contribution to Mercury · $5,000', note: 'Label "Founder capital contribution — initial funding." Covers Year 1 operating expenses.', tags: [] },
+          { id: 'mercury-3', text: 'Issue virtual debit cards: software, merch, contractors', note: 'Three categorized cards = free expense tracking. Mercury dashboard auto-categorizes.', tags: [] },
+          { id: 'mercury-4', text: 'Reimburse personal card for pre-formation expenses', note: 'One transaction with attached spreadsheet log. Clean paper trail.', tags: [] },
+          { id: 'ca-1', text: 'File CA Foreign LLC registration (Form LLC-5) at bizfileonline.sos.ca.gov', note: '~$70 filing fee. Required because Recitl operates in CA.', tags: ['CRITICAL'] },
+          { id: 'ca-2', text: 'File CA Statement of Information (Form LLC-12)', note: '$20. Due within 90 days of registration.', tags: [] },
+          { id: 'ca-3', text: 'Note: $800 CA franchise tax due ~4 months after registration', note: 'Set calendar reminder. Pay via FTB.ca.gov.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'social profile activation',
+        title: 'Unlock the platforms',
+        desc: 'Once the EIN is in hand, every platform that requires business verification can be activated. Pinterest first (no EIN needed), then X, then TikTok.',
+        tasks: [
+          { id: 'pin-1', text: 'Sign up for Pinterest business account · @getrecitl', note: 'No EIN required. Use cream monogram as profile photo.', tags: ['NOW'] },
+          { id: 'pin-2', text: 'Pre-load 8 May–Jun pins from social calendar', note: 'Pinterest rewards consistent publishing from day one.', tags: [] },
+          { id: 'x-1', text: 'Sign up for X · @getrecitl', note: 'Plum square wordmark as profile photo. Pin opening tweet to top.', tags: ['NOW'] },
+          { id: 'tt-1', text: 'Switch TikTok @getrecitl to Business Account', note: 'Requires EIN. Adds the URL field to the bio.', tags: [] },
+          { id: 'tt-2', text: 'Update TikTok profile photo to cream monogram', note: 'TikTok UI is dark — cream pops harder than plum.', tags: [] },
+          { id: 'tt-3', text: 'Add getrecitl.com link to TikTok bio', note: 'This is the moment TikTok stops being passive and becomes an acquisition channel.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'brand assets',
+        title: 'Logo files + Canva Brand Kit',
+        desc: 'Build the four core logo files in Canva, then hire a freelancer to convert to print-ready vector formats. ~$200 one-time investment in clean files.',
+        tasks: [
+          { id: 'canva-1', text: 'Subscribe to Canva Pro · $15/mo', note: 'Required for Brand Kit feature, Magic Resize, unlimited downloads.', tags: ['NOW'] },
+          { id: 'canva-2', text: 'Set up Canva Brand Kit with corrected plum (#3D2650)', note: 'Add all 11 colors, both fonts. Reference Brand Kit v2 doc.', tags: [] },
+          { id: 'logo-1', text: 'Build wordmark master in Canva (1080×1080, transparent)', note: 'Cormorant Italic 400. Plum on transparent. Period in rose #C45E8A.', tags: [] },
+          { id: 'logo-2', text: 'Build cream-on-plum reverse variant', note: 'For dark backgrounds — app icon, social profiles, LinkedIn cover.', tags: [] },
+          { id: 'logo-3', text: 'Build monogram "r." for thumbnail sizes', note: 'Both plum and cream variants.', tags: [] },
+          { id: 'logo-4', text: 'Build square app icon with EST. 2026', note: 'Plum background, cream wordmark, hairline frame. 1080×1080 master.', tags: [] },
+          { id: 'logo-5', text: 'Hire Fiverr designer for vector conversion · ~$100–200', note: 'Brief: convert SVG → AI/EPS, preserve typography, deliver black + color versions. 2-day turnaround.', tags: [] },
+          { id: 'logo-6', text: 'Store final files in "Recitl · Brand Assets" Google Drive folder', note: 'AI, EPS, PDF, PNG, SVG for each variant. Link in every vendor brief.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'legal + IP',
+        title: 'Engage Jen Okorn',
+        desc: 'Operating agreement + Tyson equity terms + IP assignment. The single most consequential legal conversation of the year.',
+        tasks: [
+          { id: 'jen-1', text: 'Email Jen Okorn introducing Recitl + Atlas formation', note: 'Reference Rochelle. Attach the v3 Build Spec. Request 30-min initial call.', tags: ['CRITICAL'] },
+          { id: 'jen-2', text: 'Operating agreement review · ~$500–800', note: 'Atlas\'s default template is fine for solo, not for Tyson. Get Jen to mark it up.', tags: ['CRITICAL'] },
+          { id: 'jen-3', text: 'Tyson equity terms drafted', note: 'Vesting schedule, cliff, IP assignment, departure triggers. Deferred-cash agreement (separate doc) already drafted in earlier session.', tags: ['CRITICAL'] },
+          { id: 'jen-4', text: 'Vox employment IP clause review', note: 'Confirm Recitl is genuinely outside Vox\'s scope. Quietly. Do not raise within Vox until exit timing is set.', tags: ['CRITICAL', 'HOLD'] },
+          { id: 'jen-5', text: 'Trademark filing · Class 9 (software) + Class 42 (SaaS)', note: '~$750 USPTO fees per class + Jen\'s time. File once entity is formed.', tags: ['CRITICAL'] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'phase-0',
+    name: 'Phase 0',
+    meta: 'May → Aug 2026',
+    title: 'Phase 0 · Audience',
+    sub: 'Five months of voice-building. End-of-season into off-season into pre-season. The calendar is already drafted — execution is the work. By August, brand voice is established and waitlist is growing.',
+    sections: [
+      {
+        eyebrow: 'social calendar execution',
+        title: 'Ship the May–Sept calendar',
+        desc: '~150 posts across IG, TikTok, Pinterest, X. 70% evergreen, 30% flex slots. The doc is built. Now it\'s about scheduling and posting consistently.',
+        tasks: [
+          { id: 'cal-1', text: 'Schedule May Week 1 posts · IG + Pinterest first', note: 'Use Buffer or Later. Free tier covers ~10 posts/month per platform.', tags: ['NOW'] },
+          { id: 'cal-2', text: 'Set up Notion or Airtable content tracker', note: 'Two columns: status (drafted / scheduled / posted / performance) and platform.', tags: [] },
+          { id: 'cal-3', text: 'Build the three Canva templates: Timeline / Plum stat / Packing list', note: 'Reference recitl_social_mocks.html. Build once, reuse 30+ times.', tags: [] },
+          { id: 'cal-4', text: 'Film comp morning footage at Gray\'s end-of-year showcase', note: '4–6 short clips. Backstage hands, parking-lot bun, costume bag. The source library for the next 5 months.', tags: ['CRITICAL'] },
+          { id: 'cal-5', text: 'Set up email-capture form on getrecitl.com landing page', note: 'ConvertKit or Loops. Confirmation email written in Recitl voice, not generic.', tags: ['CRITICAL'] },
+          { id: 'cal-6', text: 'Daily engagement ritual: 15 min/day commenting on dance mom accounts', note: 'Algorithm rewards engagement more than posting volume. Start with TAC moms.', tags: [] },
+          { id: 'cal-7', text: 'Track waitlist signups weekly', note: 'Goal: 250 by end of August, 500 by end of September.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'merch + photography props',
+        title: 'Order the launch kit',
+        desc: 'Three sample objects + tissue paper + sticker seal + design files. ~$385 to outfit yourself completely with photography props for the next 6 months of content.',
+        tasks: [
+          { id: 'merch-1', text: 'Order Corkcicle 24oz tumbler · sample · ~$45', note: 'Cream colorway. Laser engraving. Wordmark only, no URL.', tags: [] },
+          { id: 'merch-2', text: 'Order Original Favorites canvas tote · sample · ~$35', note: 'Oat colorway. Embroidered wordmark in plum thread, bottom-right.', tags: [] },
+          { id: 'merch-3', text: 'Order Public Supply linen notebook · sample · ~$15', note: 'A6 size. Cream linen. Blind embossed wordmark, centered.', tags: [] },
+          { id: 'merch-4', text: 'Order Noissue tissue paper + Sticker Mule kraft seal · ~$95', note: 'Cream paper, plum repeating wordmark pattern. Cream sticker, not white.', tags: [] },
+          { id: 'merch-5', text: 'Photograph each prop in real-life context', note: 'Build the photo archive. Hands, kitchen, car, hotel. 50+ photos before round-two order.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'dm campaigns',
+        title: 'Start the DM outreach',
+        desc: 'Founding-family conversations begin in May. 5–8 specific asks per month. Get written consent for any photo features.',
+        tasks: [
+          { id: 'dm-1', text: 'Draft list of 30 TAC families for personal outreach', note: 'Start with closest relationships. Use Script 1 from the social calendar doc.', tags: [] },
+          { id: 'dm-2', text: 'First 5 close-TAC-mom DMs sent in May', note: 'Frame: founding family pre-launch invitation. No app yet — just relationship.', tags: [] },
+          { id: 'dm-3', text: '3 comp-acquaintance DMs in June (Script 2)', note: 'Photo features for IG. Full sign-off on every post.', tags: [] },
+          { id: 'dm-4', text: '5 cold IG DMs in July (Script 3) — non-TAC studios', note: 'Specific photos that stopped you scrolling. Range across studios + demographics.', tags: [] },
+          { id: 'dm-5', text: 'Save model release email confirmations in dedicated folder', note: 'Every yes gets the release template. Folder labeled "Recitl · Releases · 2026."', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'audience targets',
+        title: 'Phase 0 success metrics',
+        desc: 'What "ready" looks like by end of September. If you hit these, Phase 1 has earned its launch.',
+        tasks: [
+          { id: 'metric-1', text: '500+ waitlist signups', note: 'The threshold for founding-family economics to work.', tags: [] },
+          { id: 'metric-2', text: 'Consistent posting cadence (~2 posts/platform/week × 4 platforms)', note: '128+ posts shipped between May and September.', tags: [] },
+          { id: 'metric-3', text: '15+ founding moms confirmed via DM', note: 'These become the photo archive AND the first beta testers.', tags: [] },
+          { id: 'metric-4', text: '1 brand voice that comp dance moms recognize', note: 'Diagnostic: a comp dance mom can tell a Recitl post from a generic dance brand post in under 2 seconds.', tags: [] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'phase-1',
+    name: 'Phase 1',
+    meta: 'Sep 2026 → Jan 2027',
+    title: 'Phase 1 · Build + Beta',
+    sub: 'Tyson ships against the v3 spec. TestFlight goes to TAC families. Founding-family welcome boxes go out. By end of January, Recitl is one month from launch with a beta-validated product.',
+    sections: [
+      {
+        eyebrow: 'tyson · already shipped',
+        title: 'v3 Build Spec is live',
+        desc: 'The full Phase 1 build spec is in Tyson\'s hands. P0 fixes locked. Architecture decisions documented. Tyson\'s cadence is the rate-limiter — your job is to unblock him, not micro-manage.',
+        tasks: [
+          { id: 'tyson-spec', text: 'v3 Build Spec shipped to Tyson', note: 'P0 fixes + architecture + Free vs Pro split + COPPA + bug list. Done.', tags: ['SHIPPED'] },
+          { id: 'tyson-palette', text: 'Brand Palette doc shipped to Tyson · corrected plum #3D2650', note: 'Send when ready. Companion to v3, doesn\'t replace it.', tags: ['NOW'] },
+          { id: 'tyson-1', text: 'Weekly standup with Tyson · Mondays', note: '30 min. What shipped, what\'s blocked, what\'s next. No scope additions without written approval.', tags: [] },
+          { id: 'tyson-2', text: 'Milestone 1 demo · backend + auth foundation', note: 'Target: end of September.', tags: [] },
+          { id: 'tyson-3', text: 'Milestone 2 demo · Calendar + Roster + Costumes', note: 'Target: mid-October.', tags: [] },
+          { id: 'tyson-4', text: 'Milestone 3 demo · Score Logger + Pack List + Hotels', note: 'Target: mid-November.', tags: [] },
+          { id: 'tyson-5', text: 'Milestone 4 demo · Studio Hub + Season Wrapped · full Phase 1 end-to-end', note: 'Target: mid-December. Buffer through January for fixes.', tags: [] },
+          { id: 'tyson-6', text: 'COPPA attorney signoff before any photo/video upload goes live', note: 'Privacy attorney engagement (most urgent legal item per v3 doc).', tags: ['CRITICAL'] },
+          { id: 'tyson-7', text: 'Security audit before any family data goes live', note: 'RLS verification, auth flow penetration test, data isolation between studios.', tags: ['CRITICAL'] },
+        ],
+      },
+      {
+        eyebrow: 'founding family launch',
+        title: 'Welcome boxes go out',
+        desc: 'Round-two merch order ships in September. By December, the first 100 founding families have received their welcome boxes. Each box is a viral content moment.',
+        tasks: [
+          { id: 'box-1', text: 'Round-two merch order · 100 mugs / 50 totes / 100 notebooks · ~$5,400', note: 'Order in late August / early September. 4–6 week lead time means delivery in October.', tags: [] },
+          { id: 'box-2', text: 'Hand-numbered welcome cards · 001 / 500 through 100 / 500', note: 'The single highest emotional ROI item in the kit. Hand-sign each one.', tags: [] },
+          { id: 'box-3', text: 'Ship first 30 boxes to TAC founding families · October', note: 'Personal handwritten note in each. These are your beta testers.', tags: [] },
+          { id: 'box-4', text: 'Ship 30 boxes to influencer DM partners · November', note: 'Each becomes a photo prop and an organic IG post.', tags: [] },
+          { id: 'box-5', text: 'Hold 25 boxes for in-person comp distribution · January', note: 'Bring to first-of-season comps. Quiet brand placement.', tags: [] },
+          { id: 'box-6', text: 'Reserve 15 boxes for waitlist surprise drops', note: 'Random "you\'re founding family #X" surprise sends create viral moments.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'testflight beta',
+        title: 'Beta validation with TAC',
+        desc: 'TestFlight rollout to TAC families starting in November. Personal text outreach (not email blast). WAU tracking from day one.',
+        tasks: [
+          { id: 'beta-1', text: 'TestFlight build ready · ~mid-November', note: 'Tyson ships beta APK. Apple TestFlight provisioning.', tags: [] },
+          { id: 'beta-2', text: 'Personal text invites to 30 TAC families', note: 'NOT email blast. Individual texts with TestFlight link. ~80% activation rate vs ~20% for email.', tags: [] },
+          { id: 'beta-3', text: 'In-person onboarding sessions at TAC · 2 sessions', note: 'You at TAC for class drop-off. Help moms install + activate. Highest-touch onboarding ever.', tags: [] },
+          { id: 'beta-4', text: 'WAU (weekly active users) tracking from day one', note: 'Single most important metric. Target: 50% WAU by end of January.', tags: ['CRITICAL'] },
+          { id: 'beta-5', text: 'Weekly beta feedback collection · Friday emails', note: 'One question per week. "What\'s broken?" "What\'s missing?" "What surprised you?"', tags: [] },
+          { id: 'beta-6', text: 'TAC director pitch · December', note: 'Once 30 families are using Recitl successfully, pitch the studio for partnership terms.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'pre-launch comms',
+        title: 'Build the launch wave',
+        desc: 'Social cadence ramps in November–January. Editorial coverage HELD until post-Vox. Build the launch crescendo silently.',
+        tasks: [
+          { id: 'launch-1', text: 'Social cadence increases to 3 posts/platform/week in December', note: 'From 2/week to 3/week. Build the crescendo.', tags: [] },
+          { id: 'launch-2', text: 'Pre-launch waitlist push · "App Store Feb 2027"', note: 'Last call for founding-family pricing. Closes when 500 cap is hit.', tags: [] },
+          { id: 'launch-3', text: 'TikTok build-in-public series · weekly screen recordings', note: 'Show the app coming together. Each video is acquisition.', tags: [] },
+          { id: 'launch-4', text: 'Editorial coverage HELD until post-Vox', note: 'No Cup of Jo, no Cut, no Romper, no LA Times, no GMA outreach. Until exit timing is set.', tags: ['HOLD'] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'phase-2',
+    name: 'Phase 2',
+    meta: 'Feb 2027',
+    title: 'Phase 2 · Launch',
+    sub: 'App Store live. Founding families pre-loaded. First competition season opens. Voice has been built for nine months. Now the product meets the audience.',
+    sections: [
+      {
+        eyebrow: 'launch week',
+        title: 'February 2027 · App Store live',
+        desc: 'Coordinated launch. App ships. TAC + 5 launch partner studios as founding partners with Year 1 Pro comped. Founding moms post their experience organically.',
+        tasks: [
+          { id: 'launch-w1', text: 'App Store submission · 2 weeks before launch', note: 'Apple review can take 1–7 days. Build buffer.', tags: ['CRITICAL'] },
+          { id: 'launch-w2', text: 'Launch day coordinated post across all platforms', note: 'IG + TikTok + Pinterest + X + LinkedIn (yours). Same brand, platform-native execution.', tags: ['CRITICAL'] },
+          { id: 'launch-w3', text: 'Email all 500+ waitlist members with download link', note: '24-hour exclusive access before public push. Founding family appreciation.', tags: [] },
+          { id: 'launch-w4', text: 'Founding moms organically share their experience', note: 'No script. They\'ve been using it for 3 months. Their posts are real.', tags: [] },
+          { id: 'launch-w5', text: 'In-person launch celebration at TAC', note: 'Small, founding-families-only. Cake, champagne, photos for the brand.', tags: [] },
+          { id: 'launch-w6', text: 'Track downloads + activation hourly for first 72 hours', note: 'Daily updates to Tyson on backend load, conversion funnel, drop-off points.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'launch partner studios',
+        title: 'Studios go live alongside',
+        desc: 'TAC + 5 launch partner studios are live with Recitl on launch day. Year 1 Pro comped. Their families are auto-onboarded.',
+        tasks: [
+          { id: 'studio-1', text: '5 launch partner studios identified by November', note: 'Beyond TAC. Geographic + style range. Founding partner terms.', tags: [] },
+          { id: 'studio-2', text: 'Studio code distributed to launch partner families · January', note: 'Pre-launch, so families are ready Day 1.', tags: [] },
+          { id: 'studio-3', text: 'Studio dashboard onboarding sessions · January', note: '30-min Zoom per studio. Walk through Roster, Chat, Notify, Analytics.', tags: [] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'phase-3',
+    name: 'Phase 3',
+    meta: 'Mar → Aug 2027',
+    title: 'Phase 3 · Validation',
+    sub: 'First full season with Recitl in market. Season Wrapped engineered to drop in June as renewal engine. Editorial activation begins (post-Vox decision).',
+    sections: [
+      {
+        eyebrow: 'first season',
+        title: 'First season in market',
+        desc: 'Comp season runs February–May 2027. Recitl is in real-world use across 6+ studios. WAU and retention data become real.',
+        tasks: [
+          { id: 'season-1', text: 'Weekly metrics review · WAU, retention, churn, NPS', note: 'Quit-trigger threshold: 50% WAU sustained for 4 consecutive weeks.', tags: ['CRITICAL'] },
+          { id: 'season-2', text: 'Bug triage and Phase 1.5 fixes from real-world use', note: 'What broke at scale. What confused new users. What features became immediate Pro upgrade triggers.', tags: [] },
+          { id: 'season-3', text: 'Founding family check-ins · monthly text', note: 'Personal, not surveyed. "How\'s it working? What\'s missing?"', tags: [] },
+          { id: 'season-4', text: 'Founding studios outreach · 5–10 elite content-forward studios', note: 'Phase 1.5 priority. Studios who become content distributors AND product validators.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'season wrapped',
+        title: 'June 2027 · Season Wrapped drop',
+        desc: 'The renewal engine. Season Wrapped is engineered to drop the second week of June as every family\'s annual retrospective. June = renewal moment.',
+        tasks: [
+          { id: 'wrapped-1', text: 'Season Wrapped feature shipped · early June', note: 'Engineered as renewal engine, not just feature. Drop coincides with annual subscription decisions.', tags: ['CRITICAL'] },
+          { id: 'wrapped-2', text: 'Animated video format for IG/TikTok · Remotion', note: 'Each family\'s Wrapped becomes shareable. Free organic distribution.', tags: [] },
+          { id: 'wrapped-3', text: 'Year 2 founding family pricing locked for Year 1 founders', note: 'Founding families never pay full price. Brand promise.', tags: [] },
+          { id: 'wrapped-4', text: 'Renewal conversion tracking · target 70%+ free → Pro upgrade', note: 'Season Wrapped is the conversion event. Measure carefully.', tags: ['CRITICAL'] },
+        ],
+      },
+      {
+        eyebrow: 'editorial activation',
+        title: 'Post-Vox editorial wave',
+        desc: 'Once you\'ve exited Vox, the editorial wave begins. The Cut, Romper, Dance Teacher, LA Times, GMA. All held until now.',
+        tasks: [
+          { id: 'ed-1', text: 'Vox exit timing decision · personal call', note: 'Quit-trigger evaluation. $500K ARR + 3 paying studios + 50% WAU sustained.', tags: ['CRITICAL', 'HOLD'] },
+          { id: 'ed-2', text: 'The Cut · founder profile pitch', note: 'Editorial relationship from your Vox network. Hold until exit announcement.', tags: ['HOLD'] },
+          { id: 'ed-3', text: 'Romper / The Bump · product feature', note: 'Family-facing media. Lower lift than The Cut, broader reach.', tags: ['HOLD'] },
+          { id: 'ed-4', text: 'Dance Teacher Magazine · trade publication feature', note: 'Industry credibility moment. Reaches studio directors.', tags: ['HOLD'] },
+          { id: 'ed-5', text: 'LA Times · local angle (LA founder, LA studio)', note: 'Your geographic base.', tags: ['HOLD'] },
+          { id: 'ed-6', text: 'GMA / Today · morning show feature', note: 'Mass-market amplification. Save for biggest moment.', tags: ['HOLD'] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'phase-4',
+    name: 'Phase 4+',
+    meta: 'Q4 2027 → 2030',
+    title: 'Phase 4+ · Scale',
+    sub: 'Year-over-year features unlock as data accumulates. Capital raise conversation (post-traction). Android. International expansion. Data licensing as second revenue line.',
+    sections: [
+      {
+        eyebrow: 'feature unlock',
+        title: 'Year 2 build',
+        desc: 'Two-way calendar sync. Account merge. Studio choreography video at scale. Recitl Sessions inaugural conference (Aug 2028).',
+        tasks: [
+          { id: 'p4-1', text: 'Two-way calendar sync (Phase 2 deferred item)', note: 'Schedule changes in Recitl reflect in Apple/Google calendar.', tags: [] },
+          { id: 'p4-2', text: 'Account merge support', note: 'Phase 1 launch handled this manually. Phase 2 automates.', tags: [] },
+          { id: 'p4-3', text: 'Studio choreography video at scale', note: 'Phase 1.5 validation in mid-2027. Phase 2 scales.', tags: [] },
+          { id: 'p4-4', text: 'Recitl Sessions inaugural conference · August 2028', note: 'Industry conference. Recitl as the convener of the comp dance world.', tags: [] },
+          { id: 'p4-5', text: 'Capital raise conversation · late 2027 / early 2028', note: 'Post-traction. Series Seed or A. Delaware LLC converts to C-Corp at this point.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'expansion',
+        title: '2028+ · Geographic + product expansion',
+        desc: 'Android. UK first, then Australia, Canada. React Native iOS scale.',
+        tasks: [
+          { id: 'p4-6', text: 'Android launch', note: 'React Native scale. Phase 3 of original architecture plan.', tags: [] },
+          { id: 'p4-7', text: 'UK expansion', note: 'First international market. Different comp dance ecosystem (more contemporary, less competition-focused).', tags: [] },
+          { id: 'p4-8', text: 'Australia + Canada expansion', note: 'Following UK. Comp dance markets with similar economics to US.', tags: [] },
+        ],
+      },
+      {
+        eyebrow: 'second revenue line',
+        title: '2029+ · Data licensing',
+        desc: 'Aggregated anonymized analytics products. Comp organizations, judging certification, college recruiters, apparel brands.',
+        tasks: [
+          { id: 'p4-9', text: 'Data licensing business launches as second revenue line', note: 'Years 1–3 we capture. Years 4+ we monetize.', tags: [] },
+          { id: 'p4-10', text: 'Comp organization direct integration partnerships', note: 'Hollywood Vibe, KAR, Tremaine as first conversations.', tags: [] },
+          { id: 'p4-11', text: 'Lifestyle brand extensions', note: 'Newsletter at scale, podcast, gift guides, merch, partnerships.', tags: [] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'exit',
+    name: 'Exit Window',
+    meta: '2030–2032',
+    title: 'Exit Window',
+    sub: 'The plan was always exit. ~$29M target at 6x ARR multiple. Quit-trigger thresholds met means you have optionality, not obligation.',
+    sections: [
+      {
+        eyebrow: 'exit math',
+        title: 'The target',
+        desc: 'Goal: home paid off + retirement funded on exit proceeds. ~$29M+ at 6x ARR multiple, Year 5–7.',
+        tasks: [
+          { id: 'exit-1', text: 'Year 5 ARR target · ~$4.9M (per current projections)', note: 'Family Pro + Studio Partnerships + Hotel Affiliate + Brand Partnerships + Featured Listings.', tags: [] },
+          { id: 'exit-2', text: 'Strategic acquirer conversations begin · Year 4', note: 'TeamSnap, Sportlyzer, Jackrabbit, larger PE roll-ups in youth-sports software.', tags: [] },
+          { id: 'exit-3', text: 'Investment banker engaged · Year 5', note: 'Boutique sports/SaaS-focused banker. Not Goldman.', tags: [] },
+          { id: 'exit-4', text: 'Exit decision · personal call', note: 'Sell or keep building? You\'ll know by Year 5.', tags: [] },
+        ],
+      },
+    ],
+  },
+];
+
+const STORAGE_KEY = 'recitl_timeline_v2';
+let activePhase = 0;
+let checked = {};
+
+async function loadProgress(){
+  try {
+    const result = await window.storage.get('progress');
+    if (result && result.value) {
+      checked = JSON.parse(result.value);
+    }
+  } catch(e){
+    // first load — no saved progress yet
+    checked = {};
+  }
+}
+
+async function saveProgress(){
+  try {
+    await window.storage.set('progress', JSON.stringify(checked));
+  } catch(e){
+    console.error('save failed', e);
+  }
+}
+
+function allTasks(){
+  return PHASES.flatMap(p => p.sections.flatMap(s => s.tasks));
+}
+
+function phaseTasks(p){
+  return p.sections.flatMap(s => s.tasks);
+}
+
+function countDone(tasks){
+  return tasks.filter(t => checked[t.id]).length;
+}
+
+function tagHtml(tags){
+  if (!tags || !tags.length) return '';
+  return `<div class="task-tags">${tags.map(t => `<span class="tag tag-${t.toLowerCase()}">${t}</span>`).join('')}</div>`;
+}
+
+function renderTabs(){
+  const nav = document.getElementById('phase-nav');
+  nav.innerHTML = PHASES.map((p, i) => `
+    <button class="phase-tab ${i === activePhase ? 'active' : ''}" onclick="setPhase(${i})">
+      <span>${p.name}</span>
+      <span class="phase-tab-meta">${p.meta}</span>
+    </button>
+  `).join('');
+}
+
+function renderProgress(){
+  const all = allTasks();
+  const done = countDone(all);
+  const pct = all.length ? Math.round((done / all.length) * 100) : 0;
+  document.getElementById('progress-text').textContent = pct + '% complete';
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function renderPhase(){
+  const p = PHASES[activePhase];
+  const tasks = phaseTasks(p);
+  const done = countDone(tasks);
+  const pct = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
+
+  let html = `
+    <div class="phase-header">
+      <div class="phase-header-content">
+        <div class="phase-eyebrow">${p.meta}</div>
+        <h2 class="phase-title">${p.title}</h2>
+        <p class="phase-sub">${p.sub}</p>
+        <div class="phase-prog">
+          <div class="phase-prog-bar"><div class="phase-prog-fill" style="width:${pct}%"></div></div>
+          <div class="phase-prog-text">${done} of ${tasks.length} · ${pct}%</div>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+  `;
+
+  p.sections.forEach(s => {
+    html += `
+      <div class="section">
+        <div class="section-eyebrow">${s.eyebrow}</div>
+        <h3 class="section-title">${s.title}</h3>
+        <p class="section-desc">${s.desc}</p>
+    `;
+    s.tasks.forEach(t => {
+      const isDone = !!checked[t.id];
+      html += `
+        <div class="task ${isDone ? 'done' : ''}" onclick="toggle('${t.id}')">
+          <div class="checkbox"></div>
+          <div class="task-content">
+            <div class="task-text">${t.text}</div>
+            ${t.note ? `<div class="task-note">${t.note}</div>` : ''}
+            ${tagHtml(t.tags)}
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  });
+
+  // Add quit triggers box on the exit phase
+  if (p.id === 'exit') {
+    html += `
+      <div class="quit-box">
+        <div class="quit-eyebrow">quit-trigger thresholds</div>
+        <h3 class="quit-title">When you have optionality, not obligation</h3>
+        <div class="quit-list">
+          <div class="quit-item">
+            <div class="quit-num">$500K</div>
+            <div class="quit-label">Confirmed ARR · the floor where Recitl is genuinely a business, not a side project.</div>
+          </div>
+          <div class="quit-item">
+            <div class="quit-num">3+</div>
+            <div class="quit-label">Active studio partners paying monthly. Validates the studio side of the platform.</div>
+          </div>
+          <div class="quit-item">
+            <div class="quit-num">50%</div>
+            <div class="quit-label">WAU retention sustained for 4 consecutive weeks. Validates the family side.</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  html += `</div>`;
+  document.getElementById('main').innerHTML = html;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function toggle(id){
+  checked[id] = !checked[id];
+  await saveProgress();
+  renderTabs();
+  renderProgress();
+  renderPhase();
+}
+
+function setPhase(i){
+  activePhase = i;
+  renderTabs();
+  renderPhase();
+}
+
+async function resetProgress(){
+  if (!confirm('Reset all progress? This will uncheck every task.')) return;
+  checked = {};
+  await saveProgress();
+  renderTabs();
+  renderProgress();
+  renderPhase();
+}
+
+(async () => {
+  await loadProgress();
+  renderTabs();
+  renderProgress();
+  renderPhase();
+})();
+</script>
+
+</body>
+</html>
